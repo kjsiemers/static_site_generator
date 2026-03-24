@@ -1,8 +1,10 @@
-from textnode import *
+from copy_static import del_files_in_dir, copy_files
 
 def main():
-    # finish here
-    print(TextNode("This is alt text", TextType.IMAGE, "www.example.com"))
+    #print("Hello from static-site-generator!")
+    del_files_in_dir("./public", [])
+    copy_files("./static", "./public")
 
 
-main()
+if __name__ == "__main__":
+    main()
