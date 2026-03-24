@@ -18,13 +18,13 @@ def del_files_in_dir(dir_path, dirs_to_delete):
                 dirs_to_delete.append(file_path)
         #shutil.rmtree(public_dir)
         # if we get here, files are gone, directories need processing
-        for dir in dirs_to_delete:
+        if dirs_to_delete and len(dirs_to_delete) > 0:
+            dir = dirs_to_delete[0]
+            del dirs_to_delete[0]
             print(f"Processing directory: {dir}")
-            del_files_in_dir(dir, dirs_to_delete)
-            os.rmdir(dir)
-            print(f"Deleted directory: {dir}")
-            del dirs_to_delete[dirs_to_delete.index(dir)]
             print(f"Remaining directories to delete: {dirs_to_delete}")
+            # we want directories to remain in the file system, so we won't delete them, but we can remove them from the list of directories to process
+            del_files_in_dir(dir, dirs_to_delete)    
     else:
         print(f"'{dir_path}' directory does not exist.")
 
