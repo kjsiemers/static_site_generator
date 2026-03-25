@@ -9,7 +9,7 @@ def extract_title(markdown):
             return line[2:].strip()
     raise ValueError("No title found in markdown")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using template {template_path}")
     with open(from_path, 'r') as f:
         markdown = f.read()
@@ -20,12 +20,14 @@ def generate_page(from_path, template_path, dest_path):
     with open(template_path, 'r') as f:
         template = f.read()
     p = template.replace("{{ Title }}", title)
-    page_content = p.replace("{{ Content }}", html_content)
+    p2 = p.replace("{{ Content }}", html_content)
+    p3 = p2.replace('href="/', f'href="{basepath}')
+    page_content = p3.replace('src="/', f'src="{basepath}')
     #print(f"Generated page content:\n{page_content}\n==========")
     with open(dest_path, 'w') as fo:
         fo.write(page_content)
 
-def generate_pages_recursive(src_dir, template_path, dest_dir):
+def generate_pages_recursive(src_dir, template_path, dest_dir, basepath):
     if os.path.exists(src_dir):
         files = os.listdir(src_dir)
         if files is None or len(files) == 0:
@@ -37,9 +39,9 @@ def generate_pages_recursive(src_dir, template_path, dest_dir):
             src_file_path = os.path.join(src_dir, file)
             if os.path.isfile(src_file_path) and file.endswith(".md"):
                 dest_file_path = os.path.join(dest_dir, file[:-3] + ".html")
-                generate_page(src_file_path, template_path, dest_file_path)
+                generate_page(src_file_path, template_path, dest_file_path, basepath)
             elif os.path.isdir(src_file_path):
                 dest_file_path = os.path.join(dest_dir, file)
-                generate_pages_recursive(src_file_path, template_path, dest_file_path)
+                generate_pages_recursive(src_file_path, template_path, dest_file_path, basepath)
     else:
         print(f"'{src_dir}' directory does not exist.")
